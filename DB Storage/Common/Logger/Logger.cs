@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ManagerDB.Connections
+namespace Common.Logger
 {
-    public class SQLConnection
+    public class Logger
     {
     }
 }
