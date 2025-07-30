@@ -1,9 +1,8 @@
-﻿<Window x:Class="WPFUI.MainWindow"
+﻿<Window x:Class="WPFUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPFUI"
         mc:Ignorable="d"
         Title="Note Manager" Height="700" Width="800">
     <TabControl>
@@ -16,9 +15,11 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Enter note text:"/>
-                <TextBox Grid.Row="1" x:Name="CreateNoteTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <Button Grid.Row="2" Content="Create Note" Click="CreateNote_Click" Height="30" Margin="0,10,0,0"/>
+                <Label Content="Enter note text:"/>
+                <TextBox Text="{Binding CreateNoteText, UpdateSourceTrigger=PropertyChanged}" 
+                         AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                <Button Content="Create Note" Command="{Binding CreateNoteCommand}" 
+                        Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
 
@@ -32,10 +33,12 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Note ID:"/>
-                <TextBox Grid.Row="1" x:Name="ViewNoteIdTextBox" Height="25"/>
-                <TextBox Grid.Row="2" x:Name="ViewNoteResultTextBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0"/>
-                <Button Grid.Row="3" Content="Get Note" Click="GetNote_Click" Height="30" Margin="0,10,0,0"/>
+                <Label Content="Note ID:"/>
+                <TextBox Text="{Binding ViewNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <TextBox Text="{Binding ViewNoteResult}" IsReadOnly="True" 
+                         AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0"/>
+                <Button Content="Get Note" Command="{Binding GetNoteCommand}" 
+                        Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
 
@@ -50,11 +53,13 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Note ID:"/>
-                <TextBox Grid.Row="1" x:Name="UpdateNoteIdTextBox" Height="25"/>
-                <Label Grid.Row="2" Content="New text:" Margin="0,10,0,0"/>
-                <TextBox Grid.Row="3" x:Name="UpdateNoteTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,5,0,0"/>
-                <Button Grid.Row="4" Content="Update Note" Click="UpdateNote_Click" Height="30" Margin="0,10,0,0"/>
+                <Label Content="Note ID:"/>
+                <TextBox Text="{Binding UpdateNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <Label Content="New text:" Margin="0,10,0,0"/>
+                <TextBox Text="{Binding UpdateNoteText, UpdateSourceTrigger=PropertyChanged}" 
+                         AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,5,0,0"/>
+                <Button Content="Update Note" Command="{Binding UpdateNoteCommand}" 
+                        Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
 
@@ -67,9 +72,10 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Note ID:"/>
-                <TextBox Grid.Row="1" x:Name="DeleteNoteIdTextBox" Height="25"/>
-                <Button Grid.Row="2" Content="Delete Note" Click="DeleteNote_Click" Height="30" Margin="0,10,0,0"/>
+                <Label Content="Note ID:"/>
+                <TextBox Text="{Binding DeleteNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <Button Content="Delete Note" Command="{Binding DeleteNoteCommand}" 
+                        Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
     </TabControl>

@@ -1,47 +1,89 @@
-﻿
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Input;
+using WPFUI.Services;
 
-namespace WPFUI
+namespace WPFUI.ViewModels
 {
-    public partial class MainWindow : Window
+    public class MainViewModel : ViewModelBase
     {
-        private const string ApiBaseUrl = "https://localhost:7197/Note";
-        private readonly HttpClient _httpClient;
+        private readonly INoteService _noteService;
 
-        public MainWindow()
+        private string _createNoteText;
+        private int _viewNoteId;
+        private string _viewNoteResult;
+        private int _updateNoteId;
+        private string _updateNoteText;
+        private int _deleteNoteId;
+
+        public string CreateNoteText
         {
-            InitializeComponent();
-            _httpClient = new HttpClient();
+            get => _createNoteText;
+            set { _createNoteText = value; OnPropertyChanged(); }
         }
 
-        private async void CreateNote_Click(object sender, RoutedEventArgs e)
+        public int ViewNoteId
         {
-            if (string.IsNullOrWhiteSpace(CreateNoteTextBox.Text))
+            get => _viewNoteId;
+            set { _viewNoteId = value; OnPropertyChanged(); }
+        }
+
+        public string ViewNoteResult
+        {
+            get => _viewNoteResult;
+            set { _viewNoteResult = value; OnPropertyChanged(); }
+        }
+
+        public int UpdateNoteId
+        {
+            get => _updateNoteId;
+            set { _updateNoteId = value; OnPropertyChanged(); }
+        }
+
+        public string UpdateNoteText
+        {
+            get => _updateNoteText;
+            set { _updateNoteText = value; OnPropertyChanged(); }
+        }
+
+        public int DeleteNoteId
+        {
+            get => _deleteNoteId;
+            set { _deleteNoteId = value; OnPropertyChanged(); }
+        }
+
+        public ICommand CreateNoteCommand { get; }
+        public ICommand GetNoteCommand { get; }
+        public ICommand UpdateNoteCommand { get; }
+        public ICommand DeleteNoteCommand { get; }
+        public MainViewModel() : this(new NoteService())
+        {
+        }
+        public MainViewModel(INoteService noteService)
+        {
+            _noteService = noteService;
+
+            CreateNoteCommand = new RelayCommand(async _ => await CreateNoteAsync());
+            GetNoteCommand = new RelayCommand(async _ => await GetNoteAsync());
+            UpdateNoteCommand = new RelayCommand(async _ => await UpdateNoteAsync());
+            DeleteNoteCommand = new RelayCommand(async _ => await DeleteNoteAsync());
+        }
+
+        private async Task CreateNoteAsync()
+        {
+            if (string.IsNullOrWhiteSpace(CreateNoteText))
             {
                 MessageBox.Show("Please enter note text", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             try
-            {                                
-                string noteText = CreateNoteTextBox.Text;               
-                string jsonContent = JsonSerializer.Serialize(noteText);                
-                var content = new StringContent(
-                    jsonContent,
-                    Encoding.UTF8,
-                    "application/json");               
-
-                var response = await _httpClient.PostAsync(ApiBaseUrl, content);
+            {
+                var response = await _noteService.CreateNoteAsync(CreateNoteText);
 
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Note created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    CreateNoteTextBox.Clear();
+                    CreateNoteText = string.Empty;
                 }
                 else
                 {
@@ -54,50 +96,37 @@ namespace WPFUI
             }
         }
 
-        private async void GetNote_Click(object sender, RoutedEventArgs e)
+        private async Task GetNoteAsync()
         {
-            if (!int.TryParse(ViewNoteIdTextBox.Text, out var id))
-            {
-                MessageBox.Show("Please enter a valid note ID", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             try
             {
-                var response = await _httpClient.GetAsync($"{ApiBaseUrl}/{id}");
+                var response = await _noteService.GetNoteAsync(ViewNoteId);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var noteText = await response.Content.ReadAsStringAsync();
-                    ViewNoteResultTextBox.Text = noteText;
+                    ViewNoteResult = await response.Content.ReadAsStringAsync();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     MessageBox.Show("Note not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    ViewNoteResultTextBox.Clear();
+                    ViewNoteResult = string.Empty;
                 }
                 else
                 {
                     MessageBox.Show($"Failed to get note. Status code: {response.StatusCode}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    ViewNoteResultTextBox.Clear();
+                    ViewNoteResult = string.Empty;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error getting note: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                ViewNoteResultTextBox.Clear();
+                ViewNoteResult = string.Empty;
             }
         }
 
-        private async void UpdateNote_Click(object sender, RoutedEventArgs e)
+        private async Task UpdateNoteAsync()
         {
-            if (!int.TryParse(UpdateNoteIdTextBox.Text, out var id))
-            {
-                MessageBox.Show("Please enter a valid note ID", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(UpdateNoteTextBox.Text))
+            if (string.IsNullOrWhiteSpace(UpdateNoteText))
             {
                 MessageBox.Show("Please enter new note text", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -105,14 +134,13 @@ namespace WPFUI
 
             try
             {
-                var content = new StringContent($"\"{UpdateNoteTextBox.Text}\"", Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"{ApiBaseUrl}/{id}", content);
+                var response = await _noteService.UpdateNoteAsync(UpdateNoteId, UpdateNoteText);
 
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Note updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    UpdateNoteIdTextBox.Clear();
-                    UpdateNoteTextBox.Clear();
+                    UpdateNoteId = 0;
+                    UpdateNoteText = string.Empty;
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -129,27 +157,21 @@ namespace WPFUI
             }
         }
 
-        private async void DeleteNote_Click(object sender, RoutedEventArgs e)
+        private async Task DeleteNoteAsync()
         {
-            if (!int.TryParse(DeleteNoteIdTextBox.Text, out var id))
-            {
-                MessageBox.Show("Please enter a valid note ID", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (MessageBox.Show($"Are you sure you want to delete note #{id}?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show($"Are you sure you want to delete note #{DeleteNoteId}?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
             {
                 return;
             }
 
             try
             {
-                var response = await _httpClient.DeleteAsync($"{ApiBaseUrl}/{id}");
+                var response = await _noteService.DeleteNoteAsync(DeleteNoteId);
 
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Note deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    DeleteNoteIdTextBox.Clear();
+                    DeleteNoteId = 0;
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
