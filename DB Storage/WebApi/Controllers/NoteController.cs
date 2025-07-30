@@ -1,14 +1,14 @@
 ﻿using BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi
+namespace WebApi.Controllers
 {
     [ApiController]
     [Route("Note")]
     public class NoteController(INoteService service) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(string text)
+        public async Task<IActionResult> CreateAsync([FromBody] string text)
         {
             await service.CreateAsync(text);
             return NoContent();

@@ -8,8 +8,10 @@ namespace BusinessLogic
         {
             var note = new Note()
             {
-                Text = text
-            };
+                Text = text,
+                Created = DateTime.UtcNow,
+                Updated = DateTime.UtcNow
+            };           
             await noteRepository.CreateAsync(note, cancellationToken);
         }
 
@@ -17,19 +19,13 @@ namespace BusinessLogic
         {
             Note note = await GetByID(id, cancellationToken);
             return note.Text;
-        }
-
-        private async Task<Note> GetByID(int id, CancellationToken cancellationToken)
-        {
-            var note = await noteRepository.GetByIDAsync(id, cancellationToken);
-            if (note is null) throw new Exception("Note not found");
-            return note;
-        }
+        }        
 
         public async Task UpdateAsync(int id, string newText, CancellationToken cancellationToken = default)
         {
             Note note = await GetByID(id, cancellationToken);
             note.Text = newText;
+            note.Updated = DateTime.UtcNow;
             await noteRepository.UpdateAsync(note, cancellationToken);
         }
 
@@ -37,6 +33,13 @@ namespace BusinessLogic
         {
             Note note = await GetByID(id, cancellationToken);
             await noteRepository.DeleteAsync(note, cancellationToken);
+        }
+
+        private async Task<Note> GetByID(int id, CancellationToken cancellationToken)
+        {
+            var note = await noteRepository.GetByIDAsync(id, cancellationToken);
+            if (note is null) throw new Exception("Note not found");
+            return note;
         }
     }
 }
