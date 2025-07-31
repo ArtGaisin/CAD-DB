@@ -10,8 +10,8 @@ namespace BusinessLogic
     {
         public Task CreateAsync(string text, CancellationToken cancellationToken = default);
         public Task<string> GetByIDAsync(int id, CancellationToken cancellationToken = default);
-        public Task UpdateAsync(int id, string newText, CancellationToken cancellationToken = default);
-        public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+        public Task<bool> UpdateAsync(int id, string newText, CancellationToken cancellationToken = default);
+        public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
          
     }
 }

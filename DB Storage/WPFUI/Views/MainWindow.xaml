@@ -16,9 +16,9 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Enter note text:"/>
-                <TextBox Text="{Binding CreateNoteText, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox Grid.Row="1" Text="{Binding CreateNoteText, UpdateSourceTrigger=PropertyChanged}" 
                          AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <Button Content="Create Note" Command="{Binding CreateNoteCommand}" 
+                <Button Grid.Row="2" Content="Create Note" Command="{Binding CreateNoteCommand}" 
                         Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
@@ -34,10 +34,10 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Note ID:"/>
-                <TextBox Text="{Binding ViewNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
-                <TextBox Text="{Binding ViewNoteResult}" IsReadOnly="True" 
+                <TextBox Grid.Row="1" Text="{Binding ViewNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <TextBox Grid.Row="2" Text="{Binding ViewNoteResult}" IsReadOnly="True" 
                          AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0"/>
-                <Button Content="Get Note" Command="{Binding GetNoteCommand}" 
+                <Button Grid.Row="3" Content="Get Note" Command="{Binding GetNoteCommand}" 
                         Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
@@ -54,11 +54,11 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Note ID:"/>
-                <TextBox Text="{Binding UpdateNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
-                <Label Content="New text:" Margin="0,10,0,0"/>
-                <TextBox Text="{Binding UpdateNoteText, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox Grid.Row="1" Text="{Binding UpdateNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <Label Grid.Row="2" Content="New text:" Margin="0,10,0,0"/>
+                <TextBox Grid.Row="3" Text="{Binding UpdateNoteText, UpdateSourceTrigger=PropertyChanged}" 
                          AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,5,0,0"/>
-                <Button Content="Update Note" Command="{Binding UpdateNoteCommand}" 
+                <Button Grid.Row="4" Content="Update Note" Command="{Binding UpdateNoteCommand}" 
                         Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>
@@ -73,8 +73,8 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Note ID:"/>
-                <TextBox Text="{Binding DeleteNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
-                <Button Content="Delete Note" Command="{Binding DeleteNoteCommand}" 
+                <TextBox Grid.Row="1" Text="{Binding DeleteNoteId, UpdateSourceTrigger=PropertyChanged}" Height="25"/>
+                <Button Grid.Row="2" Content="Delete Note" Command="{Binding DeleteNoteCommand}" 
                         Height="30" Margin="0,10,0,0"/>
             </Grid>
         </TabItem>

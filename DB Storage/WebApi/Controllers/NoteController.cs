@@ -24,15 +24,17 @@ namespace WebApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateNoteAsync([FromRoute] int id, [FromBody] string newText)
         {
-            await service.UpdateAsync(id, newText);
-            return NoContent();
+            var ans = await service.UpdateAsync(id, newText);
+            if (ans) return NoContent();
+            return NotFound();
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteNoteAsync([FromRoute] int id)
         {
-            await service.DeleteAsync(id);
-            return NoContent();
+            var ans = await service.DeleteAsync(id);
+            if (ans) return NoContent();
+            return NotFound();
         }
     }
 }

@@ -55,9 +55,7 @@ namespace WPFUI.ViewModels
         public ICommand GetNoteCommand { get; }
         public ICommand UpdateNoteCommand { get; }
         public ICommand DeleteNoteCommand { get; }
-        public MainViewModel() : this(new NoteService())
-        {
-        }
+      
         public MainViewModel(INoteService noteService)
         {
             _noteService = noteService;
